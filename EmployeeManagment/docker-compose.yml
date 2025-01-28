@@ -1,0 +1,24 @@
+services:
+  employeemanagment:
+    image: ${DOCKER_REGISTRY:-employeemanagment}
+    build:
+      context: .
+      dockerfile: EmployeeManagment/Dockerfile
+    environment:
+      - DB_SA_PASSWORD=aPP@12345678
+      - DB_HOST=docker_sqlserver 
+      - DB_NAME=EmployeeManagment 
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - docker_sqlserver
+
+  docker_sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: docker_sqlserver
+    environment:
+      - ACCEPT_EULA=Y 
+      - SA_PASSWORD=aPP@12345678 
+    ports:
+      - "1433:1433"

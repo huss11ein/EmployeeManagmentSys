@@ -1,0 +1,48 @@
+<script setup>
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+
+import SidenavItem from "./SidenavItem.vue";
+
+const store = useStore();
+const isRTL = computed(() => store.state.layout.isRTL);
+
+const getRoute = () => {
+  const route = useRoute();
+  const routeArr = route.path.split("/");
+  return routeArr[1];
+};
+</script>
+<template>
+  <div
+    class="collapse navbar-collapse w-auto h-auto h-100"
+    id="sidenav-collapse-main"
+  >
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <sidenav-item
+          to="/dashboard-default"
+          :class="getRoute() === 'dashboard-default' ? 'active' : ''"
+          :navText="isRTL ? 'لوحة القيادة' : 'Dashboard'"
+        >
+          <template v-slot:icon>
+            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+          </template>
+        </sidenav-item>
+      </li>
+      <li class="nav-item">
+        <sidenav-item
+          to="/employees"
+          :class="getRoute() === 'employees' ? 'active' : ''"
+          :navText="isRTL ? 'لوحة القيادة' : 'Employees'"
+        >
+          <template v-slot:icon>
+            <i class="ni ni-single-02 text-yellow text-sm opacity-10"></i>
+          </template>
+        </sidenav-item>
+      </li>
+    </ul>
+  </div>
+</template>
+

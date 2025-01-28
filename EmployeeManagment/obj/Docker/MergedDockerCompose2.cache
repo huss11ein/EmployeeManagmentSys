@@ -1,0 +1,64 @@
+name: dockercompose5290856576494081499
+services:
+  docker_sqlserver:
+    container_name: docker_sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: aPP@12345678
+    image: mcr.microsoft.com/mssql/server
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 1433
+        published: "1433"
+        protocol: tcp
+  employeemanagment:
+    build:
+      context: C:\Users\User\source\repos\EmpManagment\EmployeeManagment
+      dockerfile: EmployeeManagment/Dockerfile
+    depends_on:
+      docker_sqlserver:
+        condition: service_started
+        required: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ASPNETCORE_HTTPS_PORTS: "8081"
+      DB_HOST: docker_sqlserver
+      DB_NAME: EmployeeManagment
+      DB_SA_PASSWORD: aPP@12345678
+    image: employeemanagment
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5000
+        published: "5000"
+        protocol: tcp
+      - mode: ingress
+        target: 5001
+        published: "5001"
+        protocol: tcp
+      - mode: ingress
+        target: 8080
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/Microsoft/UserSecrets
+        target: /home/app/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/ASP.NET/Https
+        target: /home/app/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+networks:
+  default:
+    name: dockercompose5290856576494081499_default
